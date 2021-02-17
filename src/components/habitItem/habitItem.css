@@ -10,11 +10,25 @@ table {
   width: 100%;
 }
 
+th:first-child {
+  width: 100px;
+  display: table;
+}
+
 .l0 {
+  background: grey;
 }
 
 .l1 {
   background: #83d47c;
+}
+
+.l1 + .l1 {
+  background: orange;
+}
+
+.l1 + .l1 + .l1 {
+  background: red;
 }
 
 .l2 {

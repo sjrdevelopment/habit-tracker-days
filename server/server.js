@@ -5,13 +5,66 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
 
+import 'regenerator-runtime/runtime.js'
+
+const { DynamoDBClient, ScanCommand } = require('@aws-sdk/client-dynamodb')
+
+const REGION = 'us-east-1'
+
+const params = {
+  TableName: 'Habits',
+}
+
+const dbclient = new DynamoDBClient({ region: REGION })
+
+async function getHabits() {
+  try {
+    const data = await dbclient.send(new ScanCommand(params))
+
+    const myDat = data.Items.map((element, index, array) => {
+      return {
+        name: element.name.S,
+      }
+    })
+
+    return myDat
+  } catch (err) {
+    console.log('Error', err)
+  }
+}
+
 import Main from '../src/components/main.js'
 import rootReducer from '../src/reducers/rootReducer.js'
 
 const app = Express()
 const port = 3000
 
-const getLast2Weeks = () => {
+async function getLast2Weeks(habitId) {
+  const historyParams = {
+    TableName: 'History', //todo: retrieve data for last 2 weeks
+    FilterExpression: 'id = :id',
+    ExpressionAttributeValues: {
+      ':id': {
+        N: '1',
+      },
+    },
+  }
+
+  try {
+    const historyData = await dbclient.send(new ScanCommand(historyParams))
+
+    return historyData.Items.map((element, index, array) => {
+      return {
+        date: element.date.S,
+        completed: true,
+      }
+    })
+  } catch (err) {
+    console.log('Error', err)
+  }
+}
+
+const getCombined = (items, histories) => {
   const dateRange = Array(14)
     .fill()
     .map((item, index) => {
@@ -19,12 +72,37 @@ const getLast2Weeks = () => {
       date.setDate(date.getDate() - index - 1)
 
       return {
-        date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
-        completed: true,
+        date: date,
+        completed: false,
       }
     })
 
-  return dateRange.reverse()
+  const drRev = dateRange.reverse()
+
+  return items.map((item) => {
+    return {
+      name: item.name,
+      history: drRev.map((date) => {
+        if (
+          histories.some(
+            (e) =>
+              `${new Date(e.date).getMonth()}-${new Date(e.date).getDate()}` ===
+              `${date.date.getMonth()}-${date.date.getDate()}`
+          )
+        ) {
+          return {
+            date: date.date,
+            completed: true,
+          }
+        }
+
+        return {
+          date: date.date,
+          completed: false,
+        }
+      }),
+    }
+  })
 }
 
 const handleRender = (req, res) => {
@@ -37,40 +115,20 @@ const handleRender = (req, res) => {
     </Provider>
   )
 
-  /* TODO:
-
-    1. Connect to remote DynamoDB
-    2. Populate DB with records
-      2.1 Table for habits
-      2.2 Table for date based records, datetime format
-      2.3 Authentication details
-    3. Pull in habit names
-    4. Pull in last 2 weeks' dates
-    5. Format data for display
-
-    Next: interaction for adding/removing habits
-  */
-  const preloadedState = {
-    ...store.getState(),
-    pageData: {
-      items: [
-        {
-          name: 'Running',
-          history: getLast2Weeks(),
+  const habits = getHabits().then((data) => {
+    getLast2Weeks().then((moreData) => {
+      const preloadedState = {
+        ...store.getState(),
+        trackerData: {
+          items: data,
+          histories: moreData, //todo: list key by id?
+          combinedItems: getCombined(data, moreData),
         },
-        {
-          name: 'Reading',
-          history: getLast2Weeks(),
-        },
-        {
-          name: 'Projects',
-          history: getLast2Weeks(),
-        },
-      ],
-    },
-  }
+      }
 
-  res.send(renderFullPage(html, preloadedState))
+      res.send(renderFullPage(html, preloadedState))
+    })
+  })
 }
 
 const renderFullPage = (html, preloadedState) => {

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import pageData from './pageData.js'
+import trackerData from './trackerData.js'
 
 export default combineReducers({
-  pageData,
+  trackerData,
 })

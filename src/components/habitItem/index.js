@@ -10,7 +10,7 @@ const getLast2Weeks = () => {
       const date = new Date()
       date.setDate(date.getDate() - index - 1)
       return (
-        <th>{`${date.getDate()}/${
+        <th key={index}>{`${date.getDate()}/${
           date.getMonth() + 1
         }/${date.getFullYear()}`}</th>
       )
@@ -19,7 +19,7 @@ const getLast2Weeks = () => {
   return dateRange.reverse()
 }
 
-const HabitItem = ({ pageData }) => {
+const HabitItem = ({ trackerData }) => {
   return (
     <div className="habit-item">
       <table>
@@ -27,22 +27,23 @@ const HabitItem = ({ pageData }) => {
           <tr>
             <th></th>
             {getLast2Weeks()}
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          {pageData.items &&
-            pageData.items.map((item) => {
+          {trackerData.combinedItems &&
+            trackerData.combinedItems.map((item, index) => {
               return (
-                <tr>
+                <tr key={index}>
                   <th>{item.name}</th>
-                  {item.history.map((historyItem) => {
+                  {item.history.map((historyItem, index) => {
                     if (historyItem.completed) {
-                      return <td className="l1"></td>
+                      return <td key={index} className="l1"></td>
                     }
 
-                    return <td className="l0"></td>
+                    return <td key={index} className="l0"></td>
                   })}
-                  <td>
+                  <td key="final">
                     <input type="checkbox" />
                   </td>
                 </tr>
