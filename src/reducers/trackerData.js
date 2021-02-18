@@ -5,7 +5,7 @@ export default (state = { ...initialState }, action) => {
     case 'TEST_ACTION':
       return {
         ...state,
-        hello: action.payload,
+        hello: 'test',
       }
     default:
       return state

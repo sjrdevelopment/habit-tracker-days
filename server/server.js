@@ -24,6 +24,7 @@ async function getHabits() {
     const myDat = data.Items.map((element, index, array) => {
       return {
         name: element.name.S,
+        id: element.id.N,
       }
     })
 
@@ -39,15 +40,17 @@ import rootReducer from '../src/reducers/rootReducer.js'
 const app = Express()
 const port = 3000
 
-async function getLast2Weeks(habitId) {
-  const historyParams = {
-    TableName: 'History', //todo: retrieve data for last 2 weeks
-    FilterExpression: 'id = :id',
+/*
+FilterExpression: 'id = :id',
     ExpressionAttributeValues: {
       ':id': {
         N: '1',
       },
     },
+    */
+async function getLast2Weeks() {
+  const historyParams = {
+    TableName: 'History', //todo: retrieve data for last 2 weeks and for given ID
   }
 
   try {
@@ -56,6 +59,7 @@ async function getLast2Weeks(habitId) {
     return historyData.Items.map((element, index, array) => {
       return {
         date: element.date.S,
+        id: element.id.N,
         completed: true,
       }
     })
@@ -87,7 +91,8 @@ const getCombined = (items, histories) => {
           histories.some(
             (e) =>
               `${new Date(e.date).getMonth()}-${new Date(e.date).getDate()}` ===
-              `${date.date.getMonth()}-${date.date.getDate()}`
+                `${date.date.getMonth()}-${date.date.getDate()}` &&
+              e.id === item.id
           )
         ) {
           return {

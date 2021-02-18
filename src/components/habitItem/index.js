@@ -19,7 +19,17 @@ const getLast2Weeks = () => {
   return dateRange.reverse()
 }
 
-const HabitItem = ({ trackerData }) => {
+const HabitItem = ({ trackerData, handleClick }) => {
+  /*
+     TODO:
+        1. dispatch action on checkbox click
+        2. Get today's date and row ID
+        3. Send data to Node server
+        4. Add object to Dynamo DB
+        5. Implement security headers (helmet?)
+            - so only works with client/secret?
+    */
+
   return (
     <div className="habit-item">
       <table>
@@ -27,7 +37,7 @@ const HabitItem = ({ trackerData }) => {
           <tr>
             <th></th>
             {getLast2Weeks()}
-            <th></th>
+            <th>Today</th>
           </tr>
         </thead>
         <tbody>
@@ -44,7 +54,7 @@ const HabitItem = ({ trackerData }) => {
                     return <td key={index} className="l0"></td>
                   })}
                   <td key="final">
-                    <input type="checkbox" />
+                    <input type="checkbox" onClick={handleClick} />
                   </td>
                 </tr>
               )
@@ -59,4 +69,18 @@ const mapStateToProps = (state) => ({
   ...state,
 })
 
-export default connect(mapStateToProps)(HabitItem)
+const trackClick = (event) => {
+  return {
+    type: 'TEST_ACTION',
+    data: event,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // explicitly forwarding arguments
+    handleClick: (event) => dispatch(trackClick(event)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HabitItem)
