@@ -116,7 +116,7 @@ const getCombined = (items, histories) => {
         }
 
         return {
-          guid: '',
+          guid: uuidv4(), //todo: if today
           date: date.date,
           completed: false,
         }
@@ -244,6 +244,8 @@ app.delete('/undoCompleteDay', (req, res) => {
     }
   }
   run()
+
+  res.send()
 })
 
 app.use(Express.static(path.join(__dirname)))
