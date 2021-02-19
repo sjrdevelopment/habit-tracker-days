@@ -4,7 +4,7 @@ import './habitItem.css'
 import { connect } from 'react-redux'
 
 const getLast2Weeks = () => {
-  const dateRange = Array(14)
+  const dateRange = Array(13)
     .fill()
     .map((item, index) => {
       const date = new Date()
@@ -19,7 +19,66 @@ const getLast2Weeks = () => {
   return dateRange.reverse()
 }
 
-const HabitItem = ({ trackerData, handleClick }) => {
+async function postData(url = '', data = {}, method = 'POST') {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: method, // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  })
+
+  return ''
+
+  // try {
+  //   return response.json()
+  // } catch {
+  //   return ''
+  // }
+}
+
+const handleClick = (itemId, checked, guid = '') => {
+  if (checked) {
+    const date = new Date()
+
+    const paddedMonth = '0' + (date.getMonth() + 1)
+    const month = paddedMonth.slice(-2)
+
+    const paddedDay = '0' + date.getDate()
+    const day = paddedDay.slice(-2)
+
+    // post request to node server
+    postData('http://localhost:3000/completeDay', {
+      id: itemId,
+      date: `${date.getFullYear()}-${month}-${day}`,
+      guid: guid,
+    }).then((data) => {
+      console.log('posted data: ')
+      console.log(data) // JSON data parsed by `data.json()` call
+    })
+  } else {
+    console.log('deleting ' + guid)
+    // remove item from dynamoDB
+    postData(
+      'http://localhost:3000/undoCompleteDay',
+      {
+        guid: guid,
+      },
+      'DELETE'
+    ).then((data) => {
+      console.log('deleted data: ')
+      console.log(data) // JSON data parsed by `data.json()` call
+    })
+  }
+}
+
+const HabitItem = ({ trackerData }) => {
   /*
      TODO:
         1. dispatch action on checkbox click
@@ -43,6 +102,8 @@ const HabitItem = ({ trackerData, handleClick }) => {
         <tbody>
           {trackerData.combinedItems &&
             trackerData.combinedItems.map((item, index) => {
+              const finalDay = item.history.pop() //todo: don't pop, slice
+
               return (
                 <tr key={index}>
                   <th>{item.name}</th>
@@ -54,7 +115,17 @@ const HabitItem = ({ trackerData, handleClick }) => {
                     return <td key={index} className="l0"></td>
                   })}
                   <td key="final">
-                    <input type="checkbox" onClick={handleClick} />
+                    <input
+                      type="checkbox"
+                      defaultChecked={finalDay.completed ? 'checked' : ''}
+                      onChange={(event) => {
+                        handleClick(
+                          item.id,
+                          event.currentTarget.checked,
+                          finalDay.guid
+                        )
+                      }}
+                    />
                   </td>
                 </tr>
               )
@@ -69,18 +140,4 @@ const mapStateToProps = (state) => ({
   ...state,
 })
 
-const trackClick = (event) => {
-  return {
-    type: 'TEST_ACTION',
-    data: event,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // explicitly forwarding arguments
-    handleClick: (event) => dispatch(trackClick(event)),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HabitItem)
+export default connect(mapStateToProps)(HabitItem)

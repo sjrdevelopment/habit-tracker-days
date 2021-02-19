@@ -4,10 +4,16 @@ import React from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
+var bodyParser = require('body-parser')
 
 import 'regenerator-runtime/runtime.js'
 
-const { DynamoDBClient, ScanCommand } = require('@aws-sdk/client-dynamodb')
+const {
+  DynamoDBClient,
+  ScanCommand,
+  PutItemCommand,
+  DeleteItemCommand,
+} = require('@aws-sdk/client-dynamodb')
 
 const REGION = 'us-east-1'
 
@@ -58,6 +64,7 @@ async function getLast2Weeks() {
 
     return historyData.Items.map((element, index, array) => {
       return {
+        guid: element.guid.S,
         date: element.date.S,
         id: element.id.N,
         completed: true,
@@ -73,7 +80,7 @@ const getCombined = (items, histories) => {
     .fill()
     .map((item, index) => {
       const date = new Date()
-      date.setDate(date.getDate() - index - 1)
+      date.setDate(date.getDate() - index)
 
       return {
         date: date,
@@ -86,22 +93,30 @@ const getCombined = (items, histories) => {
   return items.map((item) => {
     return {
       name: item.name,
+      id: item.id,
       history: drRev.map((date) => {
+        let evtGuid
         if (
-          histories.some(
-            (e) =>
+          histories.some((e) => {
+            if (
               `${new Date(e.date).getMonth()}-${new Date(e.date).getDate()}` ===
                 `${date.date.getMonth()}-${date.date.getDate()}` &&
               e.id === item.id
-          )
+            ) {
+              evtGuid = e.guid
+              return true
+            }
+          })
         ) {
           return {
+            guid: evtGuid,
             date: date.date,
             completed: true,
           }
         }
 
         return {
+          guid: '',
           date: date.date,
           completed: false,
         }
@@ -158,7 +173,78 @@ const renderFullPage = (html, preloadedState) => {
   `
 }
 
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
+const updateHistory = ({ id, date, guid }) => {
+  const params = {
+    TableName: 'History',
+    Item: {
+      guid: {
+        S: guid === '' ? uuidv4() : guid,
+      },
+      date: {
+        S: date,
+      },
+      id: {
+        N: id,
+      },
+    },
+  }
+
+  const run = async () => {
+    try {
+      const data = await dbclient.send(new PutItemCommand(params))
+      console.log(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  run()
+}
+
 console.log(`Starting server in ... ${path.join(__dirname)}`)
+
+app.use(bodyParser.json())
+
+app.post('/completeDay', (req, res) => {
+  console.log('received complete day post: ')
+  console.log(req.body)
+  updateHistory(req.body)
+  res.send('')
+})
+
+app.delete('/undoCompleteDay', (req, res) => {
+  console.log('deleting item...')
+  console.log(req.body.guid)
+
+  var params = {
+    TableName: 'History',
+    Key: {
+      guid: { S: req.body.guid },
+    },
+  }
+
+  const run = async () => {
+    try {
+      const data = await dbclient.send(new DeleteItemCommand(params))
+
+      console.log('Success, item deleted', data)
+    } catch (err) {
+      if (err && err.code === 'ResourceNotFoundException') {
+        console.log('Error: Table not found')
+      } else if (err && err.code === 'ResourceInUseException') {
+        console.log('Error: Table in use')
+      }
+    }
+  }
+  run()
+})
 
 app.use(Express.static(path.join(__dirname)))
 app.use(handleRender)
