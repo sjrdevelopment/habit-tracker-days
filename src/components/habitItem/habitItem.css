@@ -42,3 +42,11 @@ th:first-child {
 td:last-child {
   text-align: center;
 }
+
+th {
+  color: black;
+}
+
+th.weekend {
+  color: red;
+}

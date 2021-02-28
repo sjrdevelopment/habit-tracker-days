@@ -11,11 +11,17 @@ const getLast2WeeksTableHeaders = () => {
       const date = new Date()
       date.setDate(date.getDate() - index - 1)
 
-      return (
-        <th key={index}>{`${date.getDate()}/${
-          date.getMonth() + 1
-        }/${date.getFullYear()}`}</th>
-      )
+      const dayOfWeek = date.getDay()
+
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return (
+          <th className="weekend" key={index}>{`${date.getDate()}/${
+            date.getMonth() + 1
+          }`}</th>
+        )
+      }
+
+      return <th key={index}>{`${date.getDate()}/${date.getMonth() + 1}`}</th>
     })
 
   return dateRange.reverse()
