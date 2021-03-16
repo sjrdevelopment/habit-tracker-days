@@ -7,7 +7,6 @@ import { renderToString } from 'react-dom/server'
 import 'regenerator-runtime/runtime.js'
 
 import { secret } from '../secret'
-console.log(secret)
 
 const basicAuth = require('express-basic-auth')
 
@@ -48,7 +47,31 @@ const updateHistory = ({ id, date, guid }) => {
         S: date,
       },
       id: {
-        N: id,
+        S: id,
+      },
+    },
+  }
+
+  const run = async () => {
+    try {
+      const data = await dbclient.send(new PutItemCommand(params))
+      console.log(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  run()
+}
+
+const createHabit = ({ name }) => {
+  const params = {
+    TableName: 'Habits',
+    Item: {
+      name: {
+        S: name,
+      },
+      id: {
+        S: uuidv4(),
       },
     },
   }
@@ -75,7 +98,7 @@ async function getHabits() {
     const myDat = data.Items.map((element, index, array) => {
       return {
         name: element.name.S,
-        id: element.id.N,
+        id: element.id.S,
       }
     })
 
@@ -97,7 +120,7 @@ async function getLast2Weeks() {
       return {
         guid: element.guid.S,
         date: element.date.S,
-        id: element.id.N,
+        id: element.id.S,
         completed: true,
       }
     })
@@ -175,6 +198,9 @@ const handleRender = (req, res) => {
           histories: moreData, //todo: list key by id?
           combinedItems: getCombined(data, moreData),
         },
+        config: {
+          host: process.env.host || 'localhost:3000',
+        },
       }
 
       res.send(renderFullPage(html, preloadedState))
@@ -220,6 +246,13 @@ app.post('/completeDay', (req, res) => {
   console.log('received complete day post: ')
   console.log(req.body)
   updateHistory(req.body)
+  res.send('')
+})
+
+app.post('/createHabit', (req, res) => {
+  console.log('received habit create: ')
+  console.log(req.body)
+  createHabit(req.body)
   res.send('')
 })
 

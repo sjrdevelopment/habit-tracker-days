@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import AddNewHabit from '../addNewHabit'
 import TodayStatus from '../todayStatus'
 import './habitItem.css'
 
@@ -59,6 +60,7 @@ const HabitItem = ({ trackerData }) => {
             })}
         </tbody>
       </table>
+      <AddNewHabit />
     </div>
   )
 }

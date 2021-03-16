@@ -1,8 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import './todayStatus.css'
-
-const serverUrl = 'http://localhost:3000'
 
 async function postData(url = '', data = {}, method = 'POST') {
   // Default options are marked with *
@@ -26,7 +25,7 @@ async function postData(url = '', data = {}, method = 'POST') {
   }
 }
 
-const handleClick = (itemId, checked, guid = '') => {
+const handleClick = (itemId, checked, guid = '', host) => {
   if (checked) {
     const date = new Date()
 
@@ -37,7 +36,7 @@ const handleClick = (itemId, checked, guid = '') => {
     const day = paddedDay.slice(-2)
 
     // post request to node server
-    postData(`${serverUrl}/completeDay`, {
+    postData(`${host}/completeDay`, {
       id: itemId,
       date: `${date.getFullYear()}-${month}-${day}`,
       guid: guid,
@@ -49,7 +48,7 @@ const handleClick = (itemId, checked, guid = '') => {
     console.log('deleting ' + guid)
     // remove item from dynamoDB
     postData(
-      `${serverUrl}/undoCompleteDay`,
+      `${host}/undoCompleteDay`,
       {
         guid: guid,
       },
@@ -61,18 +60,27 @@ const handleClick = (itemId, checked, guid = '') => {
   }
 }
 
-const TodayStatus = ({ finalDay, item }) => {
+const TodayStatus = ({ finalDay, item, config }) => {
   return (
     <td key="final">
       <input
         type="checkbox"
         defaultChecked={finalDay.completed ? 'checked' : ''}
         onChange={(event) => {
-          handleClick(item.id, event.currentTarget.checked, finalDay.guid)
+          handleClick(
+            item.id,
+            event.currentTarget.checked,
+            finalDay.guid,
+            config.host
+          )
         }}
       />
     </td>
   )
 }
 
-export default TodayStatus
+const mapStateToProps = (state) => ({
+  ...state,
+})
+
+export default connect(mapStateToProps)(TodayStatus)
