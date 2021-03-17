@@ -285,6 +285,35 @@ app.delete('/undoCompleteDay', (req, res) => {
   res.send()
 })
 
+app.delete('/deleteHabit', (req, res) => {
+  console.log('deleting habit item...')
+  console.log(req.body.id)
+
+  var params = {
+    TableName: 'Habits',
+    Key: {
+      name: { S: req.body.name }, // TODO: Make primary key the ID.
+    },
+  }
+
+  const run = async () => {
+    try {
+      const data = await dbclient.send(new DeleteItemCommand(params))
+
+      console.log('Success, item deleted', data)
+    } catch (err) {
+      if (err && err.code === 'ResourceNotFoundException') {
+        console.log('Error: Table not found')
+      } else if (err && err.code === 'ResourceInUseException') {
+        console.log('Error: Table in use')
+      }
+    }
+  }
+  run()
+
+  res.send()
+})
+
 app.use(Express.static(path.join(__dirname)))
 app.use(handleRender)
 

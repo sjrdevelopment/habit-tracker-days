@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import AddNewHabit from '../addNewHabit'
 import TodayStatus from '../todayStatus'
+import HabitDelete from '../habitDelete'
 import './habitItem.css'
 
 const getLast2WeeksTableHeaders = () => {
@@ -46,7 +47,9 @@ const HabitItem = ({ trackerData }) => {
 
               return (
                 <tr key={index}>
-                  <th>{item.name}</th>
+                  <th>
+                    {item.name} <HabitDelete item={item} />
+                  </th>
                   {item.history.map((historyItem, index) => {
                     if (historyItem.completed) {
                       return <td key={index} className="l1"></td>
