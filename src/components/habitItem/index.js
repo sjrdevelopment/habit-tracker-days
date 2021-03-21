@@ -43,14 +43,14 @@ const HabitItem = ({ trackerData }) => {
         <tbody>
           {trackerData.combinedItems &&
             trackerData.combinedItems.map((item, index) => {
-              const finalDay = item.history.pop() //todo: don't pop, slice
+              const finalDay = item.history.slice(-1)[0]
 
               return (
                 <tr key={index}>
                   <th>
                     {item.name} <HabitDelete item={item} />
                   </th>
-                  {item.history.map((historyItem, index) => {
+                  {item.history.slice(0, 13).map((historyItem, index) => {
                     if (historyItem.completed) {
                       return <td key={index} className="l1"></td>
                     }

@@ -63,7 +63,7 @@ const updateHistory = ({ id, date, guid }) => {
   run()
 }
 
-const createHabit = ({ name }) => {
+const createHabit = ({ name, id }) => {
   const params = {
     TableName: 'Habits',
     Item: {
@@ -71,7 +71,7 @@ const createHabit = ({ name }) => {
         S: name,
       },
       id: {
-        S: uuidv4(),
+        S: id,
       },
     },
   }
@@ -129,8 +129,8 @@ async function getLast2Weeks() {
   }
 }
 
-const getCombined = (items, histories) => {
-  const dateRange = Array(14)
+const create2Weeks = () => {
+  const placeholder = Array(14)
     .fill()
     .map((item, index) => {
       const date = new Date()
@@ -142,7 +142,11 @@ const getCombined = (items, histories) => {
       }
     })
 
-  const drRev = dateRange.reverse()
+  return placeholder.reverse()
+}
+
+const getCombined = (items, histories) => {
+  const drRev = create2Weeks()
 
   return items.map((item) => {
     return {
@@ -252,8 +256,17 @@ app.post('/completeDay', (req, res) => {
 app.post('/createHabit', (req, res) => {
   console.log('received habit create: ')
   console.log(req.body)
-  createHabit(req.body)
-  res.send('')
+
+  const params = {
+    name: req.body.name,
+    id: uuidv4(),
+  }
+
+  createHabit(params)
+  res.send({
+    ...params,
+    history: create2Weeks(),
+  })
 })
 
 app.delete('/undoCompleteDay', (req, res) => {

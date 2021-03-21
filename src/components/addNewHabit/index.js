@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import './addNewHabit.css'
+import { connect } from 'react-redux'
 
 async function postData(url = '', data = {}, method = 'POST') {
   // Default options are marked with *
@@ -23,7 +24,7 @@ async function postData(url = '', data = {}, method = 'POST') {
   }
 }
 
-const AddNewHabit = () => {
+const AddNewHabit = ({ addHabit, config }) => {
   const [showHabitDialog, updateShowDialog] = useState(false)
   const [habitTitle, updateTitle] = useState()
 
@@ -35,7 +36,13 @@ const AddNewHabit = () => {
     console.log('save habit')
     console.log(habitTitle)
 
-    postData('http://localhost:3000/createHabit', { name: habitTitle })
+    postData(`${config.host}/createHabit`, { name: habitTitle })
+      .then((resp) => {
+        return resp.json()
+      })
+      .then(function (data) {
+        addHabit(data)
+      })
   }
 
   const onTitleChange = (event) => {
@@ -57,4 +64,14 @@ const AddNewHabit = () => {
   )
 }
 
-export default AddNewHabit
+const mapStateToProps = (state) => ({
+  ...state,
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addHabit: (data) => dispatch({ type: 'HABIT_ADD', payload: data }),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewHabit)

@@ -35,14 +35,13 @@ const handleClick = (itemId, checked, guid = '', host) => {
     const paddedDay = '0' + date.getDate()
     const day = paddedDay.slice(-2)
 
-    // post request to node server
     postData(`${host}/completeDay`, {
       id: itemId,
       date: `${date.getFullYear()}-${month}-${day}`,
       guid: guid,
     }).then((data) => {
       console.log('posted data: ')
-      console.log(data) // JSON data parsed by `data.json()` call
+      console.log(data)
     })
   } else {
     console.log('deleting ' + guid)
@@ -55,7 +54,7 @@ const handleClick = (itemId, checked, guid = '', host) => {
       'DELETE'
     ).then((data) => {
       console.log('deleted data: ')
-      console.log(data) // JSON data parsed by `data.json()` call
+      console.log(data)
     })
   }
 }

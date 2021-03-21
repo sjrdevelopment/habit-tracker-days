@@ -24,18 +24,24 @@ async function postData(url = '', data = {}, method = 'POST') {
   }
 }
 
-const handleClick = ({ id, name }, url) => {
+const handleClick = ({ id, name }, url, removeHabit) => {
   const deleteUrl = `${url}/deleteHabit`
 
   // post data to api for delete habit
-  postData(deleteUrl, { id: id, name: name }, 'DELETE')
+  postData(deleteUrl, { id: id, name: name }, 'DELETE').then((resp) => {
+    console.log('test test tes')
+    console.log(resp)
+    if (resp.status === 200) {
+      removeHabit(id)
+    }
+  })
 }
 
-const HabitDelete = ({ item, config }) => {
+const HabitDelete = ({ item, config, removeHabit }) => {
   return (
     <button
       className="delete-button"
-      onClick={() => handleClick(item, config.host)}
+      onClick={() => handleClick(item, config.host, removeHabit)}
     >
       Delete
     </button>
@@ -46,4 +52,11 @@ const mapStateToProps = (state) => ({
   ...state,
 })
 
-export default connect(mapStateToProps)(HabitDelete)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeHabit: (id) =>
+      dispatch({ type: 'HABIT_REMOVE', payload: { id: id } }),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HabitDelete)
