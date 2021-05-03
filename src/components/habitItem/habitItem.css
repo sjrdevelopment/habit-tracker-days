@@ -1,34 +1,59 @@
-.habit-item {
-  color: green;
-}
-
 .master {
   width: 100%;
 }
 
 table {
   width: 100%;
+  table-layout: fixed;
 }
 
-th:first-child {
+th,
+td {
+  color: white;
+  font-weight: 300;
+}
+
+td {
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+th:first-child,
+td:first-child {
   width: 100px;
-  display: table;
 }
 
-.l0 {
-  background: grey;
+.circle {
+  width: 40%;
+  border-radius: 50%;
+  display: block;
+  background: #9ba0d9;
+  position: relative;
+  height: 100%;
+  margin: auto;
 }
 
-.l1 {
-  background: #83d47c;
+.circle:after {
+  content: '';
+  display: block;
+  padding-bottom: 100%;
 }
 
-.l1 + .l1 {
-  background: orange;
+.l0 .circle {
+  width: 40%;
 }
 
-.l1 + .l1 + .l1 {
-  background: red;
+.l1 .circle {
+  width: 60%;
+  background: white;
+}
+
+.l1 + .l1 .circle {
+  width: 80%;
+}
+
+.l1 + .l1 + .l1 .circle {
+  width: 100%;
 }
 
 .l2 {
@@ -43,10 +68,6 @@ td:last-child {
   text-align: center;
 }
 
-th {
-  color: black;
-}
-
 th.weekend {
-  color: red;
+  font-weight: 600;
 }

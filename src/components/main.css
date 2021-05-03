@@ -1,3 +1,26 @@
+html,
+body {
+  margin: 0;
+  font-family: 'Dosis', sans-serif;
+}
+
 .main {
-  color: blue;
+  padding: 16px;
+  background: rgb(101, 110, 230);
+  background: linear-gradient(
+    151deg,
+    rgba(101, 110, 230, 1) 0%,
+    rgba(69, 79, 153, 1) 100%
+  );
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: scroll;
+  color: white;
+}
+
+.heading {
+  font-weight: 300;
 }

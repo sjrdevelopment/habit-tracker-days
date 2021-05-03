@@ -43,7 +43,7 @@ const HabitDelete = ({ item, config, removeHabit }) => {
       className="delete-button"
       onClick={() => handleClick(item, config.host, removeHabit)}
     >
-      Delete
+      x
     </button>
   )
 }

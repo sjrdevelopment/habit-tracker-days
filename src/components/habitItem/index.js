@@ -47,15 +47,23 @@ const HabitItem = ({ trackerData }) => {
 
               return (
                 <tr key={index}>
-                  <th>
+                  <td>
                     {item.name} <HabitDelete item={item} />
-                  </th>
+                  </td>
                   {item.history.slice(0, 13).map((historyItem, index) => {
                     if (historyItem.completed) {
-                      return <td key={index} className="l1"></td>
+                      return (
+                        <td key={index} className="l1">
+                          <span className="circle"></span>
+                        </td>
+                      )
                     }
 
-                    return <td key={index} className="l0"></td>
+                    return (
+                      <td key={index} className="l0">
+                        <span className="circle"></span>
+                      </td>
+                    )
                   })}
                   <TodayStatus item={item} finalDay={finalDay} />
                 </tr>
