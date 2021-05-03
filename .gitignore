@@ -3,3 +3,4 @@ node_modules
 dist
 secret.js
 ecosystem.config.js
+.env

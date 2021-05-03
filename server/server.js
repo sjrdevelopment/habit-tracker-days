@@ -8,6 +8,8 @@ import 'regenerator-runtime/runtime.js'
 
 import { secret } from '../secret'
 
+require('dotenv').config()
+
 const basicAuth = require('express-basic-auth')
 
 const {
@@ -203,7 +205,7 @@ const handleRender = (req, res) => {
           combinedItems: getCombined(data, moreData),
         },
         config: {
-          host: process.env.host || 'localhost:3000',
+          host: process.env.host || 'http://localhost:3000',
         },
       }
 
