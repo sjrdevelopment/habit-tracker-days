@@ -6,12 +6,13 @@
   appearance: none;
   border: 0;
   background: none;
+  margin-left: 14px;
 }
 .delete-button:before,
 .delete-button:after {
   position: absolute;
   top: 25%;
-  left: 8px;
+  left: auto;
   width: 2px;
   height: 18px;
   background-color: #f0f0f0;

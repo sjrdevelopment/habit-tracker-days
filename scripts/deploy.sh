@@ -1,4 +1,5 @@
 #!/bin/sh
+# param: dns of ec2 instance
 
 ssh -i ~/keys/habit-tracker-ec2.pem ec2-user@$1 "rm -rf current"
 
