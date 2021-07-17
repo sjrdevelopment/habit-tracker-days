@@ -3,8 +3,15 @@
 }
 
 table {
-  width: 100%;
   table-layout: fixed;
+  margin-left: -20px;
+  width: calc(100% + 20px);
+}
+
+th {
+  transform: rotate(270deg);
+  padding-left: 14px;
+  font-size: 14px;
 }
 
 th,
@@ -20,11 +27,31 @@ td {
 
 th:first-child,
 td:first-child {
-  width: 100px;
+  text-align: left;
+  display: block;
+  margin-top: -20px;
+  margin-left: 20px;
+  width: 100%;
+  position: fixed;
+}
+
+tr {
+  height: 60px;
+}
+
+@media only screen and (min-width: 500px) {
+  th:first-child,
+  td:first-child {
+    display: table-cell;
+    margin-top: 0;
+  }
+
+  tr {
+    height: auto;
+  }
 }
 
 .circle {
-  width: 40%;
   border-radius: 50%;
   display: block;
   background: #9ba0d9;
@@ -40,20 +67,43 @@ td:first-child {
 }
 
 .l0 .circle {
-  width: 40%;
+  width: 60%;
 }
 
 .l1 .circle {
-  width: 60%;
-  background: white;
+  background: rgb(255, 235, 61);
+  opacity: 0.5;
+  width: 100%;
 }
 
 .l1 + .l1 .circle {
-  width: 80%;
+  /*background: rgba(255, 235, 61, 0.7);*/
+  opacity: 0.7;
 }
 
 .l1 + .l1 + .l1 .circle {
-  width: 100%;
+  /*background: rgba(255, 235, 61, 1);*/
+  opacity: 1;
+}
+
+tr:nth-of-type(1) .l1 .circle {
+  background: rgb(16 255 88);
+}
+
+tr:nth-of-type(2) .l1 .circle {
+  background: rgb(34 240 255);
+}
+
+tr:nth-of-type(3) .l1 .circle {
+  background: rgb(255 114 45);
+}
+
+tr:nth-of-type(4) .l1 .circle {
+  background: rgb(255 62 171);
+}
+
+tr:nth-of-type(5) .l1 .circle {
+  background: rgb(255 163 39);
 }
 
 .l2 {

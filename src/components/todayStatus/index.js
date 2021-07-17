@@ -63,6 +63,7 @@ const TodayStatus = ({ finalDay, item, config }) => {
   return (
     <td key="final">
       <input
+        className="today-status"
         type="checkbox"
         defaultChecked={finalDay.completed ? 'checked' : ''}
         onChange={(event) => {

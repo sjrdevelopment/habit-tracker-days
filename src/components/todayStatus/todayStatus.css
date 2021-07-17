@@ -1,0 +1,13 @@
+.today-status {
+  appearance: none;
+  border: 0;
+  background: white;
+  width: 24px;
+  height: 24px;
+  display: block;
+  border: 1px solid white;
+}
+
+.today-status:checked {
+  background: #20ff07;
+}

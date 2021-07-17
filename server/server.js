@@ -223,6 +223,7 @@ const renderFullPage = (html, preloadedState) => {
         <title>Node Redux SSR template</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;600&display=swap" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
       </head>
       <body>
         <div id="root">${html}</div>

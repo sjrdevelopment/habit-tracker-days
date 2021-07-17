@@ -1,3 +1,24 @@
 .delete-button {
-  color: green;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  font-size: 0;
+  appearance: none;
+  border: 0;
+  background: none;
+}
+.delete-button:before,
+.delete-button:after {
+  position: absolute;
+  top: 25%;
+  left: 8px;
+  width: 2px;
+  height: 18px;
+  background-color: #f0f0f0;
+  transform: rotate(45deg) translate(-50%, -50%);
+  transform-origin: top left;
+  content: '';
+}
+.delete-button:after {
+  transform: rotate(-45deg) translate(-50%, -50%);
 }
