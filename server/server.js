@@ -220,7 +220,7 @@ const renderFullPage = (html, preloadedState) => {
     <html>
       <head>
         <link rel="stylesheet" type="text/css" href="/main.css"></link>
-        <title>Node Redux SSR template</title>
+        <title>Daily Habit Tracker</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;600&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1">

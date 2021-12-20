@@ -52,9 +52,9 @@ tr {
 }
 
 .circle {
-  border-radius: 50%;
+  border-radius: 30%;
   display: block;
-  background: #9ba0d9;
+  background: #3e3e3e;
   position: relative;
   height: 100%;
   margin: auto;
@@ -67,7 +67,7 @@ tr {
 }
 
 .l0 .circle {
-  width: 60%;
+  /*width: 60%;*/
 }
 
 .l1 .circle {

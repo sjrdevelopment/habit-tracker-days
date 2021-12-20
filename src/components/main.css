@@ -6,12 +6,8 @@ body {
 
 .main {
   padding: 16px;
-  background: rgb(101, 110, 230);
-  background: linear-gradient(
-    151deg,
-    rgba(101, 110, 230, 1) 0%,
-    rgba(69, 79, 153, 1) 100%
-  );
+  background: rgb(56, 56, 56);
+  background: linear-gradient(151deg, rgb(44 44 44) 0%, rgb(15 15 15) 100%);
   position: absolute;
   top: 0;
   bottom: 0;
