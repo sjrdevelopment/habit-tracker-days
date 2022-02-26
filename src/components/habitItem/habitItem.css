@@ -4,8 +4,7 @@
 
 table {
   table-layout: fixed;
-  margin-left: -20px;
-  width: calc(100% + 20px);
+  width: 100%;
 }
 
 th {
@@ -23,27 +22,20 @@ td {
   padding-bottom: 16px;
 }
 
-th:first-child,
-.data-row td:first-child {
-  /* text-align: left;
-  display: block;
-  margin-top: -20px;
-  margin-left: 20px;
-  width: 100%;
-  position: fixed; */
-}
-
 .data-row {
   height: 60px;
 }
 
-@media only screen and (min-width: 500px) {
-  th:first-child,
-  .data-row td:first-child {
-    /* display: table-cell;
-    margin-top: 0; */
-  }
+.header-row td:last-child {
+  text-align: left;
+  padding: 6px 0 0 10px;
+}
 
+.header-row td:last-child button {
+  position: relative;
+}
+
+@media only screen and (min-width: 500px) {
   .data-row {
     height: auto;
   }
@@ -123,4 +115,6 @@ th.weekend {
 
 th:last-child {
   color: #16d0e9;
+  border: 1px solid;
+  border-radius: 7px;
 }

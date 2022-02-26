@@ -51,7 +51,9 @@ const AddNewHabit = ({ addHabit, config }) => {
 
   return (
     <div>
-      <button onClick={toggleHabitDialog}>Add new habit</button>
+      <button className="addNewButton" onClick={toggleHabitDialog}>
+        Add new habit
+      </button>
 
       {showHabitDialog && (
         <div className="habit-dialog">
